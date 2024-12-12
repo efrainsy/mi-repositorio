@@ -86,7 +86,12 @@
 
 <script>
     // Variables
-    let products = [];
+    let products = [
+        { name: "Miel de Abejas Pura", price: 5.00 },
+        { name: "Crema de Miel", price: 7.00 },
+        { name: "Miel en Tarro de 500g", price: 8.50 },
+        { name: "Caramelos de Miel", price: 3.50 }
+    ];
     let cart = [];
     
     // Formulario de productos
@@ -163,6 +168,11 @@
             updateCart();
         }
     });
+
+    // Inicializar productos al cargar la página
+    window.onload = function() {
+        displayProducts();
+    };
 </script>
 
 </body>
