@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        .product-form, .cart {
+            margin-bottom: 20px;
+        }
+        .product-list, .cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-list li, .cart-items li {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .product-list button, .cart-items button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .cart-items button {
+            background-color: #dc3545;
+        }
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sistema de Ventas</h1>
+</header>
+
+<main>
+    <section class="product-form">
+        <h2>Agregar Producto</h2>
+        <form id="productForm">
+            <label for="productName">Nombre del Producto:</label>
+            <input type="text" id="productName" required><br><br>
+            <label for="productPrice">Precio:</label>
+            <input type="number" id="productPrice" required><br><br>
+            <button type="submit">Agregar al Inventario</button>
+        </form>
+    </section>
+
+    <section class="product-list">
+        <h2>Productos Disponibles</h2>
+        <ul id="products">
+            <!-- Aquí se mostrarán los productos -->
+        </ul>
+    </section>
+
+    <section class="cart">
+        <h2>Carrito de Compras</h2>
+        <ul id="cartItems" class="cart-items">
+            <!-- Aquí se mostrarán los productos del carrito -->
+        </ul>
+        <p class="total">Total: $<span id="totalPrice">0</span></p>
+        <button id="checkoutBtn">Finalizar Compra</button>
+    </section>
+</main>
+
+<script>
+    // Variables
+    let products = [];
+    let cart = [];
+    
+    // Formulario de productos
+    const productForm = document.getElementById('productForm');
+    const productNameInput = document.getElementById('productName');
+    const productPriceInput = document.getElementById('productPrice');
+    const productsList = document.getElementById('products');
+    
+    // Carrito de compras
+    const cartItemsList = document.getElementById('cartItems');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    // Agregar producto al inventario
+    productForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        const productName = productNameInput.value;
+        const productPrice = parseFloat(productPriceInput.value);
+        
+        if (productName && productPrice > 0) {
+            const product = { name: productName, price: productPrice };
+            products.push(product);
+            displayProducts();
+            
+            productNameInput.value = '';
+            productPriceInput.value = '';
+        }
+    });
+
+    // Mostrar productos en el inventario
+    function displayProducts() {
+        productsList.innerHTML = '';
+        products.forEach((product, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `${product.name} - $${product.price.toFixed(2)} <button onclick="addToCart(${index})">Agregar al Carrito</button>`;
+            productsList.appendChild(li);
+        });
+    }
+
+    // Agregar producto al carrito
+    function addToCart(index) {
+        const product = products[index];
+        cart.push(product);
+        updateCart();
+    }
+
+    // Mostrar productos en el carrito
+    function updateCart() {
+        cartItemsList.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `${item.name} - $${item.price.toFixed(2)} <button onclick="removeFromCart(${index})">Eliminar</button>`;
+            cartItemsList.appendChild(li);
+            total += item.price;
+        });
+        totalPriceElement.textContent = total.toFixed(2);
+    }
+
+    // Eliminar producto del carrito
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+    }
+
+    // Finalizar compra
+    checkoutBtn.addEventListener('click', () => {
+        if (cart.length === 0) {
+            alert('El carrito está vacío');
+        } else {
+            alert('Compra finalizada. Total: $' + totalPriceElement.textContent);
+            cart = [];
+            updateCart();
+        }
+    });
+</script>
+
+</body>
+</html>
